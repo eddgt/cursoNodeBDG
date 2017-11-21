@@ -1,6 +1,8 @@
-let array = [10,20,30,40];
+//let array = [10,20,30,40];
+const mongoose = require('mongoose');
+const TVShow = mongoose.model('TVShow');
 const obj={};
-const tvShows=[    
+/*const tvShows=[    
     {
     id: 1,
     titulo: 'SHOW 1',
@@ -12,10 +14,18 @@ const tvShows=[
         pais: 'SV'
       }     
 
-]
+] */
+
 
 obj.getArray=(req, res, next)=>{
-    res.send(tvShows);
+    //res.send(tvShows);
+    TVShow.find((err, tvshows)=>{
+        if(err){
+            res.send({errr: err});
+        }
+        console.log(tvshows);
+        res.send(tvshows);
+    });
 }
 /*
 obj.postArray = (req, res, next)=>{
@@ -24,18 +34,52 @@ obj.postArray = (req, res, next)=>{
     }*/
 
 obj.postArray = (req, res, next)=>{
-    tvShows.push(req.body);
-        res.send(tvShows);
-    }
+    //tvShows.push(req.body);
+       // res.send(tvShows);
+        let newTVShow = new TVShow({
+            titulo: req.body.titulo,
+            anio: req.body.anio,
+            pais: req.body.pais
+        });
+        
+        newTVShow.save((err, result)=>{
+            if(err){
+                return res.send({error: err});
+            }
+                   res.send(result) ;
+                    });
+    
+    };
 
+
+obj.getById = (req, res, next)=>{
+    let tvFind = TVShow.findById(req.params.id, (err, tvshow)=>{
+        if(err){
+            return res.send({error: err});
+        }
+        res.send(tvshow);
+    });
+    
+}
+/*
 obj.getById = (req, res, next)=>{
     let tvFind = tvShows.find((tvShow)=> tvShow.Id == Number.parseInt(req.params.id));
     if(!tvFind){
         return res.send({error: 'Show:' + req.params.id +', no encontrado'});
     }
     res.send(tvFind);
+}*/
+
+obj.deleteTvShow = (req, res, next)=>{
+    let findAndRemoveTv = TVShow.findByIdAndRemove(req.params.id, (err, result)=>{
+        if(err){
+            return res.send({error: err});
+        }
+        res.send(result);
+    });    
 }
 
+/*
 obj.deleteTvShow = (req, res, next)=>{
     let indexTvShow = tvShows.findIndex((tvShow)=> tvShow.Id==Number.parseInt(req.params.id));
     if(indexTvShow<0){
@@ -46,6 +90,14 @@ obj.deleteTvShow = (req, res, next)=>{
 
     res.send(tvShows.splice(indexTvShow,1));
 }
+*/
+
+/*
+obj.updateTvShow = (req, res, next)=>{
+let indexTvShow = tvShows.findIndex((tvShow)=> tvShow.Id==Number.parseInt(req.params.id));
+if(indexTvShow<0){
+return res.send({error: 'Id:' + req.params.id +', no encontrado'});
+}*/
 
 module.exports=obj;
 /*

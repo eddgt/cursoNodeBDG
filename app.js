@@ -8,6 +8,10 @@ var bodyParser = require('body-parser');
 //importar mongoose
 var mongoose = require('mongoose');
 
+
+//importamos los modelos creados
+require('./models/TVShow')(app, mongoose);
+
 var index = require('./routes/index'); 
 var users = require('./routes/users');
 
@@ -20,6 +24,7 @@ mongoose.connect('mongodb://localhost/curso_bdg',{useMongoClient: true },(err)=>
     }
     console.log('Connected to Mongo');                 
                  });
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
