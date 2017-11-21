@@ -28,18 +28,23 @@ obj.postArray = (req, res, next)=>{
         res.send(tvShows);
     }
 
-obj.getById =(req, res, next)=>{
-    let tvFind = tvShows.find((tvShow)=> tvShow.Id === Number.parseInt(req.params.id));
+obj.getById = (req, res, next)=>{
+    let tvFind = tvShows.find((tvShow)=> tvShow.Id == Number.parseInt(req.params.id));
+    if(!tvFind){
+        return res.send({error: 'Show:' + req.params.id +', no encontrado'});
+    }
     res.send(tvFind);
 }
 
-
-obj.deleteTvShow =(req, res, next)=>{
-    let indexTvShow = tvShows.findIndex((tvShow)=> tvShow.Id === Number.parseInt(req.params.id));
-    if(indexTvShow < 0){
-        return res.send({error: 'el ' + req.params.id +'no encontrado'});
+obj.deleteTvShow = (req, res, next)=>{
+    let indexTvShow = tvShows.findIndex((tvShow)=> tvShow.Id==Number.parseInt(req.params.id));
+    if(indexTvShow<0){
+        return res.send({error: 'Id:' + req.params.id +', no encontrado'});
     }
-    res.send({r:indexTvShow});
+
+    //let result = tvShows.splice(indexTvShow,1);
+
+    res.send(tvShows.splice(indexTvShow,1));
 }
 
 module.exports=obj;
