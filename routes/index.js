@@ -20,7 +20,7 @@ array[req.param.id]=req.body.number;
 
 router.post('/test/',controllers.tvController.postArray);
 
-router.put('/test/',controllers.tvController.postArray);
+router.put('/test/:id',controllers.tvController.updateTvShow);
 
 router.get('/hm/',controllers.holaMundoController.hola);
 

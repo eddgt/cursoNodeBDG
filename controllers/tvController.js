@@ -92,6 +92,16 @@ obj.deleteTvShow = (req, res, next)=>{
 }
 */
 
+
+obj.updateTvShow = (req, res, next)=>{
+    TVShow.findByIdAndUpdate(req.params.id,req.body, (err, result)=>{
+        if(err){
+           return res.send(err);
+           }
+        res.send(result);
+    });
+}
+
 /*
 obj.updateTvShow = (req, res, next)=>{
 let indexTvShow = tvShows.findIndex((tvShow)=> tvShow.Id==Number.parseInt(req.params.id));
