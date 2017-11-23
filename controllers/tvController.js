@@ -2,6 +2,16 @@
 const mongoose = require('mongoose');
 const TVShow = mongoose.model('TVShow');
 const obj={};
+
+const todos =(callback)=>{
+    TVShow.find((err,tvshows)=>{
+        if(err){
+            return callback({error: err},null);
+        }
+        callback(null,tvshows)
+    });
+};
+
 /*const tvShows=[    
     {
     id: 1,
@@ -19,13 +29,35 @@ const obj={};
 
 obj.getArray=(req, res, next)=>{
     //res.send(tvShows);
-    TVShow.find((err, tvshows)=>{
+    
+    //uso de callbacks
+    //desventajas tenemos que anidarlas
+    /*TVShow.find((err, tvshows)=>{
         if(err){
             res.send({errr: err});
         }
         console.log(tvshows);
         res.send(tvshows);
-    });
+    });*/
+    
+    /*todos((error,result)=>{
+          if(error){
+        return res.send({error: error});
+    }
+    res.send(result);
+          }
+         );*/
+    
+    //uso de promesas
+    //es un callback pero nos puede anidar mas promesas dentro de ellas
+    TVShow.find()
+    .then(tvshows=>{
+        return res.send(tvshows);
+    })
+    .catch(err =>{
+        return res.send({error: err});
+    })
+    
 }
 /*
 obj.postArray = (req, res, next)=>{
