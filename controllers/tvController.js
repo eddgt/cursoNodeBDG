@@ -3,13 +3,34 @@ const mongoose = require('mongoose');
 const TVShow = mongoose.model('TVShow');
 const obj={};
 
-const todos =(callback)=>{
-    TVShow.find((err,tvshows)=>{
+//const todos =(callback)=>{//usando callback
+const todos =(tvshows)=>{    
+    /*TVShow.find((err,tvshows)=>{
         if(err){
             return callback({error: err},null);
         }
         callback(null,tvshows)
-    });
+    });*/
+    
+    //suando promesa dentro de promesa
+    /*return new Promise((resolve, reject)=>{
+       TVShow.find()
+        .then(tvshows=>resolve(tvshows) )
+        .catch(err => reject({error: err}))
+       }) ;*/
+    
+    //el find devuelve todos (es una promesa)
+    //return TVShow.find();
+    
+    
+    return new Promise((resolve, reject)=>{
+       if(tvshows.length<0){
+           return reject('No hay datos');
+       }
+        return resolve({data: tvshows.length});
+       }) ;
+    
+    
 };
 
 /*const tvShows=[    
@@ -50,13 +71,22 @@ obj.getArray=(req, res, next)=>{
     
     //uso de promesas
     //es un callback pero nos puede anidar mas promesas dentro de ellas
+    /*TVShow.find()
+    .then(tvshows=> res.send(tvshows))
+    .catch(err => res.send({error: err}))*/
+    
+    /*todos()
+    .then(tvshows=> res.send(tvshows))
+    .catch(err => res.send({error: err}));*/
+    
     TVShow.find()
-    .then(tvshows=>{
-        return res.send(tvshows);
-    })
-    .catch(err =>{
-        return res.send({error: err});
-    })
+    .then(tvshows => { 
+        if(tvshows.length >0 ){
+            return Promise.reject('arreglo mayor a 0');
+        }
+        return todos(tvshows) } )
+    .then(resultado => res.send(resultado))
+    .catch(err => res.send({error: err}));
     
 }
 /*
@@ -85,12 +115,17 @@ obj.postArray = (req, res, next)=>{
 
 
 obj.getById = (req, res, next)=>{
-    let tvFind = TVShow.findById(req.params.id, (err, tvshow)=>{
+    /*let tvFind = TVShow.findById(req.params.id, (err, tvshow)=>{
         if(err){
             return res.send({error: err});
         }
         res.send(tvshow);
-    });
+    });*/
+    
+    //usando promesas
+    TVShow.findById(req.params.id)
+    .then(resuslt => res.send(resuslt))
+    .catch(err => res.send({error: err}));
     
 }
 /*
@@ -103,12 +138,17 @@ obj.getById = (req, res, next)=>{
 }*/
 
 obj.deleteTvShow = (req, res, next)=>{
-    let findAndRemoveTv = TVShow.findByIdAndRemove(req.params.id, (err, result)=>{
+    /*let findAndRemoveTv = TVShow.findByIdAndRemove(req.params.id, (err, result)=>{
         if(err){
             return res.send({error: err});
         }
         res.send(result);
-    });    
+    });   */
+    
+    //usando promesas
+    TVShow.findByIdAndRemove(req.params.id)
+    .then(result => res.send(result))
+    .catch(err => res.send({error: err}));
 }
 
 /*
@@ -126,12 +166,17 @@ obj.deleteTvShow = (req, res, next)=>{
 
 
 obj.updateTvShow = (req, res, next)=>{
-    TVShow.findByIdAndUpdate(req.params.id,req.body, (err, result)=>{
+    /*TVShow.findByIdAndUpdate(req.params.id,req.body, (err, result)=>{
         if(err){
            return res.send(err);
            }
         res.send(result);
-    });
+    });*/
+    
+    //usando promesas
+    TVShow.findByIdAndUpdate(req.params.id)
+    .then(result => res.send(result))
+    .catch(err => res.send({error: err}));
 }
 
 /*
